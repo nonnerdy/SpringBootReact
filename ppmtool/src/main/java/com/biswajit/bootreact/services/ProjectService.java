@@ -13,6 +13,11 @@ public class ProjectService {
 	@Autowired
 	private ProjectRepositories projectRepositories;
 	
+	/**
+	 * Create a new project
+	 * @param project
+	 * @return
+	 */
 	public Project saveOrUpdateProject(Project project) {
 		
 		try {
@@ -23,6 +28,50 @@ public class ProjectService {
 			throw new ProjectIdException("Project ID '"+project.getProjectIdentifier()+"'already exists");
 		}
 		
+		
+	}
+	/**
+	 * Return project based on Project ID
+	 * @param projectId
+	 * @return
+	 */
+	public Project findProjectByIdentifier(String projectId) {
+		
+		Project project = projectRepositories.findByProjectIdentifier(projectId.toUpperCase());
+	
+		if(project == null) {
+			throw new ProjectIdException("Project ID '"+projectId+"'doesn't exists");
+ 
+		}
+		
+		return project;
+	}
+	
+	/**
+	 * list all the projects
+	 * 
+	 * we are using iterable to get all the data in the
+	 * form of JSON
+	 * @return
+	 */
+	public Iterable<Project> findAllProjects(){
+		return projectRepositories.findAll();
+	}
+	
+	/**
+	 * Delete project by projectIdentifier
+	 * 
+	 * @param projectId
+	 */
+	public void deleteProjectByIdentifier(String projectId) {
+		Project project = projectRepositories.findByProjectIdentifier(projectId.toUpperCase());
+		
+		if(project == null) {
+			throw new ProjectIdException("Cannot delete project with Project ID '"+projectId+"'. This project doesn't exists.");
+ 
+		}
+		
+		projectRepositories.delete(project);
 		
 	}
 }
